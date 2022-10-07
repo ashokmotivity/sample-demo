@@ -1,24 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import {useEffect} from "react";
+import { appTheme } from "./themes/theme";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+import Login from './Pages/Login';
+import Header from "./Pages/Header";
+import AddData from './Pages/AddData';
+import Graph from "./Pages/Graph";
+
+import { useNavigate } from "react-router-dom";
+
+
+const PrivateRoute =({children}) =>{
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if (!!localStorage.getItem('isLogin') && localStorage.getItem('isLogin') === "true") {
+      
+    } else {
+      navigate("/")
+    }
+  },[])
+
+  return <Header>{children}</Header>
+
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={appTheme}>
+      <CssBaseline enableColorScheme />
+      <BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Login />}/>
+      <Route path="/home" element={<PrivateRoute><AddData /></PrivateRoute>} />
+      <Route path="/graph" element={<PrivateRoute><Graph /></PrivateRoute>} />
+        
+        </Routes>
+        </BrowserRouter>
+    </ThemeProvider>
   );
 }
 
